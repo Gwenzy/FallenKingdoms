@@ -1,0 +1,8 @@
+name: FallenKingdoms
+main: fr.gwenzy.fk.main.Main
+version: 1.0
+author: Gwenzy
+commands:
+  fk:
+    usage: /fk <Argument>
+    description: Commande principale du plugin FallenKingdoms
