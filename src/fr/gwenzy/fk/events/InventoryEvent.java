@@ -1,6 +1,8 @@
 package fr.gwenzy.fk.events;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,12 +15,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.gwenzy.fk.main.Main;
+import fr.gwenzy.fk.main.MainMethods;
 
 public class InventoryEvent implements Listener {
 
 	@EventHandler
-	public void onClickInventory(InventoryClickEvent event)
+	public void onClickInventory(InventoryClickEvent event) throws IOException
 	{
+		try
+		{
 		if(event.getInventory().getName().equalsIgnoreCase("Joueurs de la partie."))
 		{
 			if(event.getCurrentItem()!= null)
@@ -64,6 +69,27 @@ public class InventoryEvent implements Listener {
 				p.closeInventory();
 				p.openInventory(i);
 			}
+		}
+		else if(event.getInventory().getName().contains("Ajout d'un joueur"))
+		{
+			event.setCancelled(true);
+			String team = event.getInventory().getName().replace("Ajout d'un joueur : ", "");
+			team = team.replace(".", "");
+			team = team.replace(" ", "");
+			String pl = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
+			List<String> players = Main.config.getStringList("Teams."+team+".players");
+			players.add(pl);
+			Main.config.set("Teams."+team+".players", players);
+			Main.config.save("plugins/FallenKingdoms/game.yml");
+			
+			event.getWhoClicked().closeInventory();
+			event.getWhoClicked().openInventory(MainMethods.getTeamsInventory());
+			
+		}
+		}
+		catch(Exception e)
+		{
+			
 		}
 	}
 }
