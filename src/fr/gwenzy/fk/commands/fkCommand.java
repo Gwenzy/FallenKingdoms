@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,6 +24,7 @@ import fr.gwenzy.fk.main.Main;
 import fr.gwenzy.fk.main.MainMethods;
 
 public class fkCommand implements CommandExecutor {
+	public static Timer timer = new Timer();
 
 	public static NumberFormat f = new DecimalFormat("00");
 	private Main plugin;
@@ -94,7 +96,7 @@ public class fkCommand implements CommandExecutor {
 				{
 					if(Main.config.get("Teams.Number")==null)
 					{
-						sender.sendMessage(ChatColor.RED+Main.fk+"Vous devriez effectuer une configuration avant de vouloir son résumé :p");
+						sender.sendMessage(ChatColor.RED+Main.fk+"Vous devriez effectuer une configuration avant de vouloir ajouter un joueur à une équipes !");
 					}
 					else
 					{
@@ -110,41 +112,53 @@ public class fkCommand implements CommandExecutor {
 			}
 			else if(args[0].equalsIgnoreCase("start"))
 			{
+				World w = p.getWorld();
+	    		w.setPVP(false);
 				//On prépare le scoreboard
 				Scoreboard sb = Main.sbm.getNewScoreboard();
 				Objective obj = sb.registerNewObjective("dummy", "dummy");
 				obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 				obj.setDisplayName("Fallen Kingdoms");
 				Score score1 = obj.getScore(Main.s.getOfflinePlayer("Jour 1"));
-				score1.setScore(-4);
+				score1.setScore(-2);
 				Score score2 = obj.getScore(Main.s.getOfflinePlayer("20:00"));
 				score2.setScore(-5);
+				Score score3 = obj.getScore(Main.s.getOfflinePlayer(""));
+				score3.setScore(-1);
+				Score score4 = obj.getScore(Main.s.getOfflinePlayer("PVP : Jour "+Main.config.getInt("DaysConfig.pvp")));
+				score4.setScore(-3);
+				Score score5 = obj.getScore(Main.s.getOfflinePlayer("Assauts : Jour "+Main.config.getInt("DaysConfig.assaut")));
+				score5.setScore(-4);
 				p.setScoreboard(sb);
 				
-				 Timer timer = new Timer();
+				 
 				 timer.schedule( 
 						 new TimerTask() {
+							 boolean msgPVP = false;
+							 boolean msgAss = false;
 							 public void run() {
+								 
 								 Iterator<OfflinePlayer> it = p.getScoreboard().getPlayers().iterator();  
 							        
 							    	int jourA = 0;
 							        int minutesA = 0;
 							        int secondsA = 0;
-							        int jour = 0;
+							        int jour = 1;
 							        String minutes = "0";
 							        String seconds = "0";
 							        
 							    	
-							    	
 							    	while (it.hasNext())  
 							        {
 							    		OfflinePlayer a = it.next();
-							    		if((a.getName().contains("Jour")))
+								    	Iterator<Score> scores = p.getScoreboard().getScores(a).iterator();
+								    	int score = scores.next().getScore();
+							    		if(score == -2)
 							            {
 							            	jourA = Integer.valueOf(a.getName().replaceAll("Jour ", ""));
 							            	
 							            }
-							    		if((a.getName().contains(":")))
+							    		if(score == -5)
 							            {
 							            	minutesA = Integer.valueOf(a.getName().split(":")[0]);
 							            	secondsA = Integer.valueOf(a.getName().split(":")[1]);
@@ -153,7 +167,20 @@ public class fkCommand implements CommandExecutor {
 							        
 							            
 							        }  
-
+							    	if(jour >= Main.config.getInt("DaysConfig.pvp")&&!msgPVP)
+							    	{
+							    		Main.s.broadcastMessage(ChatColor.AQUA+Main.fk+"Le pvp est désormais actif !");
+							    		World w = p.getWorld();
+							    		w.setPVP(true);
+							    		msgPVP = true;
+							    	}
+							    	if(jour >= Main.config.getInt("DaysConfig.assaut")&&!msgAss)
+							    	{
+							    		Main.s.broadcastMessage(ChatColor.AQUA+Main.fk+"Les assauts sont désormais actifs !");
+							    		World w = p.getWorld();
+							    		w.setPVP(true);
+							    		msgAss = true;
+							    	}
 							    	p.setScoreboard(Main.sbm.getNewScoreboard());
 							    	Scoreboard sb = Main.sbm.getNewScoreboard();
 									Objective obj = sb.registerNewObjective("dummy", "dummy");
@@ -184,15 +211,28 @@ public class fkCommand implements CommandExecutor {
 										seconds = f.format(secondsA-1);
 									}
 									Score score1 = obj.getScore(Main.s.getOfflinePlayer("Jour "+jour));
-									score1.setScore(-4);
+									score1.setScore(-2);
 									Score score2 = obj.getScore(Main.s.getOfflinePlayer(minutes+":"+seconds));
 									score2.setScore(-5);
+									Score score3 = obj.getScore(Main.s.getOfflinePlayer(""));
+									score3.setScore(-1);
+									Score score4 = obj.getScore(Main.s.getOfflinePlayer("PVP : Jour "+Main.config.getInt("DaysConfig.pvp")));
+									score4.setScore(-3);
+									Score score5 = obj.getScore(Main.s.getOfflinePlayer("Assauts : Jour "+Main.config.getInt("DaysConfig.assaut")));
+									score5.setScore(-4);
+									
 									p.setScoreboard(sb);
-								 } 
+								 
+							 }
 							 
 							 }, 0, 1000); 
 							 
 
+			}
+			else if(args[0].equalsIgnoreCase("stop"))
+			{
+				
+				
 			}
 		}
 		else

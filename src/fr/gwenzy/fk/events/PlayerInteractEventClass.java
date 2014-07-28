@@ -100,7 +100,7 @@ public class PlayerInteractEventClass implements Listener {
 							Location b2 = new Location(p.getWorld(), Double.valueOf(p2.split("--")[0]), 256, Double.valueOf(p2.split("--")[2]));
 							
 							
-							MainMethods.addWGRegion("Base1", b1, b2, p.getWorld());
+							MainMethods.addWGRegion("base1", b1, b2, p.getWorld());
 							if(nbBases == actual)
 							{
 								p.sendMessage(ChatColor.GREEN+Main.fk+"Toutes les bases ont été définies !");
@@ -135,7 +135,7 @@ public class PlayerInteractEventClass implements Listener {
 								double z = Double.valueOf(p1.split("--")[2]);
 								Location b1 = new Location(p.getWorld(), x, 0, z);
 								Location b2 = new Location(p.getWorld(), Double.valueOf(p2.split("--")[0]), 256, Double.valueOf(p2.split("--")[2]));
-								MainMethods.addWGRegion("Base"+actual, b1, b2, p.getWorld());
+								MainMethods.addWGRegion("base"+actual, b1, b2, p.getWorld());
 								
 
 								if(nbBases == actual)
@@ -155,7 +155,6 @@ public class PlayerInteractEventClass implements Listener {
 					}
 				}
 			ArrayList<String> players = new ArrayList<>();
-			players.add("gwenzy71");
 			
 			Main.config.set("Teams.Team"+(actual-1)+".BaseName", "Base"+actual);
 			Main.config.set("Teams.Team"+(actual-1)+".Couleur", "§"+(actual+1));

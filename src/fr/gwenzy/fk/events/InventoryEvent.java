@@ -14,6 +14,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
 import fr.gwenzy.fk.main.Main;
 import fr.gwenzy.fk.main.MainMethods;
 
@@ -81,7 +84,11 @@ public class InventoryEvent implements Listener {
 			players.add(pl);
 			Main.config.set("Teams."+team+".players", players);
 			Main.config.save("plugins/FallenKingdoms/game.yml");
-			
+			int nbTeam = Integer.valueOf(team.replaceAll("Team", ""));
+			ProtectedRegion r = Main.wgp.getRegionManager(event.getWhoClicked().getWorld()).getRegion("base"+nbTeam);
+			DefaultDomain dd = r.getMembers();
+			dd.addPlayer(ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()));
+			r.setMembers(dd);
 			event.getWhoClicked().closeInventory();
 			event.getWhoClicked().openInventory(MainMethods.getTeamsInventory());
 			
