@@ -1,19 +1,30 @@
 package fr.gwenzy.fk.commands;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 import fr.gwenzy.fk.main.Main;
 import fr.gwenzy.fk.main.MainMethods;
 
 public class fkCommand implements CommandExecutor {
 
+	public static NumberFormat f = new DecimalFormat("00");
 	private Main plugin;
 	public fkCommand(Main plugin)
 	{
@@ -28,7 +39,7 @@ public class fkCommand implements CommandExecutor {
 		{
 			if(sender instanceof Player)
 			{
-				Player p = (Player )sender;
+				final Player p = (Player )sender;
 
 			if(args[0].equalsIgnoreCase("init"))
 			{
@@ -96,6 +107,92 @@ public class fkCommand implements CommandExecutor {
 					}
 				
 			}
+			}
+			else if(args[0].equalsIgnoreCase("start"))
+			{
+				//On prépare le scoreboard
+				Scoreboard sb = Main.sbm.getNewScoreboard();
+				Objective obj = sb.registerNewObjective("dummy", "dummy");
+				obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+				obj.setDisplayName("Fallen Kingdoms");
+				Score score1 = obj.getScore(Main.s.getOfflinePlayer("Jour 1"));
+				score1.setScore(-4);
+				Score score2 = obj.getScore(Main.s.getOfflinePlayer("20:00"));
+				score2.setScore(-5);
+				p.setScoreboard(sb);
+				
+				 Timer timer = new Timer();
+				 timer.schedule( 
+						 new TimerTask() {
+							 public void run() {
+								 Iterator<OfflinePlayer> it = p.getScoreboard().getPlayers().iterator();  
+							        
+							    	int jourA = 0;
+							        int minutesA = 0;
+							        int secondsA = 0;
+							        int jour = 0;
+							        String minutes = "0";
+							        String seconds = "0";
+							        
+							    	
+							    	
+							    	while (it.hasNext())  
+							        {
+							    		OfflinePlayer a = it.next();
+							    		if((a.getName().contains("Jour")))
+							            {
+							            	jourA = Integer.valueOf(a.getName().replaceAll("Jour ", ""));
+							            	
+							            }
+							    		if((a.getName().contains(":")))
+							            {
+							            	minutesA = Integer.valueOf(a.getName().split(":")[0]);
+							            	secondsA = Integer.valueOf(a.getName().split(":")[1]);
+							            }
+							    		
+							        
+							            
+							        }  
+
+							    	p.setScoreboard(Main.sbm.getNewScoreboard());
+							    	Scoreboard sb = Main.sbm.getNewScoreboard();
+									Objective obj = sb.registerNewObjective("dummy", "dummy");
+									obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+									obj.setDisplayName("Fallen Kingdoms");
+									
+									if(minutesA==0&&secondsA==0)
+									{
+
+										jour = jourA+1;
+										minutes = f.format(20);
+										seconds = f.format(00);
+										Main.s.broadcastMessage(ChatColor.GOLD+"---------------Fin du jour "+jourA+"---------------");
+										
+									}
+									else if(secondsA==0&&minutesA!=0)
+									{
+
+										jour = jourA;
+										minutes = f.format(minutesA-1);
+										seconds = f.format(59);
+									}
+									else
+									{
+
+										jour = jourA;
+										minutes = f.format(minutesA);
+										seconds = f.format(secondsA-1);
+									}
+									Score score1 = obj.getScore(Main.s.getOfflinePlayer("Jour "+jour));
+									score1.setScore(-4);
+									Score score2 = obj.getScore(Main.s.getOfflinePlayer(minutes+":"+seconds));
+									score2.setScore(-5);
+									p.setScoreboard(sb);
+								 } 
+							 
+							 }, 0, 1000); 
+							 
+
 			}
 		}
 		else

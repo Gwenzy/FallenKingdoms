@@ -2,6 +2,7 @@ package fr.gwenzy.fk.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -27,6 +29,8 @@ public class Main extends JavaPlugin
 	public static String fk = "[FallenKingdoms] ";
 	public static FileConfiguration config = null;
 	public fkCommand fkce = new fkCommand(this);
+	public static ScoreboardManager sbm = Main.s.getScoreboardManager();
+	
 	@Override
 	public void onEnable()
 	{
