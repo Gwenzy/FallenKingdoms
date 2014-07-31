@@ -2,6 +2,7 @@ package fr.gwenzy.fk.commands;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -112,6 +113,52 @@ public class fkCommand implements CommandExecutor {
 			}
 			else if(args[0].equalsIgnoreCase("start"))
 			{
+				int teams = Main.config.getInt("Teams.Number");
+				ArrayList<Integer> list = new ArrayList<>();
+				boolean ok = false;
+				for(int i=1; i<=teams; i++)
+				{
+					list.add(Main.config.getStringList("Teams.Team"+i+".players").size());
+					
+				}
+				if(teams == 2)
+				{
+					if(list.get(0)==list.get(1))
+					{
+						ok=true;
+					}
+				}
+				else if(teams == 3)
+				{
+					if(list.get(0)==list.get(1)&&list.get(0)==list.get(2))
+					{
+						ok=true;
+					}
+				}
+				else if(teams == 4)
+				{
+					if(list.get(0)==list.get(1)&&list.get(0)==list.get(2)&&list.get(0)==list.get(3))
+					{
+						ok=true;
+					}
+				}
+				else if(teams == 5)
+				{
+					if(list.get(0)==list.get(1)&&list.get(0)==list.get(2)&&list.get(0)==list.get(3)&&list.get(0)==list.get(4))
+					{
+						ok=true;
+					}
+				}
+				else if(teams == 6)
+				{
+					if(list.get(0)==list.get(1)&&list.get(0)==list.get(2)&&list.get(0)==list.get(3)&&list.get(0)==list.get(4)&&list.get(0)==list.get(5))
+					{
+						ok=true;
+					}
+				}
+				
+				if(ok)
+				{
 				World w = p.getWorld();
 	    		w.setPVP(false);
 				//On prépare le scoreboard
@@ -228,6 +275,11 @@ public class fkCommand implements CommandExecutor {
 							 }, 0, 1000); 
 							 
 
+				}
+				else
+				{
+					sender.sendMessage(ChatColor.RED+Main.fk+"Les équipes doivent être équilibrées en nombre avant que vous puissiez lancer la partie !");
+				}
 			}
 			else if(args[0].equalsIgnoreCase("stop"))
 			{
