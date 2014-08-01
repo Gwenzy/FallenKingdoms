@@ -168,7 +168,7 @@ public class fkCommand implements CommandExecutor {
 				obj.setDisplayName("Fallen Kingdoms");
 				Score score1 = obj.getScore(Main.s.getOfflinePlayer("Jour 1"));
 				score1.setScore(-2);
-				Score score2 = obj.getScore(Main.s.getOfflinePlayer("20:00"));
+				Score score2 = obj.getScore(Main.s.getOfflinePlayer("00:10"));
 				score2.setScore(-5);
 				Score score3 = obj.getScore(Main.s.getOfflinePlayer(""));
 				score3.setScore(-1);
@@ -176,8 +176,10 @@ public class fkCommand implements CommandExecutor {
 				score4.setScore(-3);
 				Score score5 = obj.getScore(Main.s.getOfflinePlayer("Assauts : Jour "+Main.config.getInt("DaysConfig.assaut")));
 				score5.setScore(-4);
-				p.setScoreboard(sb);
-				
+				for(Player pl : Main.s.getOnlinePlayers())
+				{
+					pl.setScoreboard(sb);
+				}
 				 
 				 timer.schedule( 
 						 new TimerTask() {
@@ -187,7 +189,7 @@ public class fkCommand implements CommandExecutor {
 								 
 								 Iterator<OfflinePlayer> it = p.getScoreboard().getPlayers().iterator();  
 							        
-							    	int jourA = 0;
+							    	int jourA = 1;
 							        int minutesA = 0;
 							        int secondsA = 0;
 							        int jour = 1;
@@ -268,7 +270,10 @@ public class fkCommand implements CommandExecutor {
 									Score score5 = obj.getScore(Main.s.getOfflinePlayer("Assauts : Jour "+Main.config.getInt("DaysConfig.assaut")));
 									score5.setScore(-4);
 									
-									p.setScoreboard(sb);
+									for(Player pl : Main.s.getOnlinePlayers())
+									{
+										pl.setScoreboard(sb);
+									}
 								 
 							 }
 							 
